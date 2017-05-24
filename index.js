@@ -23,31 +23,16 @@ const checks = require('./lib/checks');
 * @returns {Object.logo} - url of an image with where alt=logo
 * @returns {Object.screenshot} - url of an image with where alt=screenshot
 * @example
-* const README = require('readme?delimiterTag=h2!./README.md');
+* const README = require('readme-parser')(source);
 * console.log(README)
 */
 
-function getLoaderConfig(context) {
-  const query = loaderUtils.parseQuery(context.query);
-  const configKey = query.config || 'readmeLoader';
-  const config = context.options && context.options.hasOwnProperty(configKey) ? context.options[configKey] : {};
-
-  delete query.config;
-
-  return Object.assign(query, config);
-}
-
-
 module.exports = function(source) {
-  const query = loaderUtils.parseQuery(this.query);
-  this.cacheable();
-  const config = getLoaderConfig(this);
   const tree = md.parse(source, {});
 
   const obj = {
     title: (tokens => (
       _(tokens)
-        // explict chaining because of .head()
         .chain()
         .filterByType('heading')
         .filter(t => !helpers.tokenContains(t, checks.badges))
@@ -74,32 +59,11 @@ module.exports = function(source) {
         .join('')
       )
     )(_.cloneDeep(tree)),
-    images: {
-      logo:(tokens => (
-        _(tokens)
-          .chain()
-          .find(t => new RegExp('logo', 'i').test(t.content))
-          .getContent()
-          .getUrl()
-          .value()
-        )
-      )(_.cloneDeep(tree)),
-      screenshot:(tokens => (
-        _(tokens)
-          .chain()
-          .find(t => new RegExp('screenshot', 'i').test(t.content))
-          .getContent()
-          .getUrl()
-          .value()
-        )
-      )(_.cloneDeep(tree))
-    },
     installation: helpers.contentByTitle(_.cloneDeep(tree), checks.installation),
     features: helpers.contentByTitle(_.cloneDeep(tree), checks.features),
     contribute: helpers.contentByTitle(_.cloneDeep(tree), checks.contribute),
     license: helpers.contentByTitle(_.cloneDeep(tree), checks.license),
   };
 
-  console.log(JSON.stringify(helpers.renderToHtml(obj), null, 2));
-  return 'module.exports = ' + JSON.stringify(helpers.renderToHtml(obj));
+  return helpers.renderToHtml(obj);
 };

@@ -1,38 +1,23 @@
-[![npm][npm]][npm-url]
-[![test][test]][test-url]
-
 ### Install
 
 ```bash
-npm i -D readme-loader
+npm i -D readme-parser
 ```
 
 ### Usage
 
 ```js
-module: {
-  rules: [
-    {
-      test: /\.md?$/,
-      loader: 'readme-loader',
-      options: ...
-    },
-    ...
-  ],
-}
+const fs = require('fs');
+const readmeParser = require('readme-parser');
+
+fs.readFile('./samples/enzyme.md', 'utf8', (err, content) => {
+  console.log(readmeParser(content));
+})
 ```
 
-or inline:
+## Related
 
-```js
-require("readme-loader!./README.md");
-```
-
-### Examples
-
-```
-cd /examples && webpack
-```
+[readme-loader](https://github.com/craig-mulligan/readme-loader) - webpack loader using this module
 
 > MIT
 
@@ -57,9 +42,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
-[npm]: https://img.shields.io/npm/v/readme-loader.svg
-[npm-url]: https://npmjs.com/package/readme-loader
-
-[test]: http://img.shields.io/travis/craig-mulligan/readme-loader.svg
-[test-url]: https://travis-ci.org/craig-mulligan/readme-loader

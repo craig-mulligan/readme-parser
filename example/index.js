@@ -1,4 +1,7 @@
-function requireAll(r) { r.keys().forEach(r); }
-requireAll(require.context('./samples/', true, /\.md$/));
+const fs = require('fs');
+const readmeParser = require('../');
 
-require('./samples/enzyme.md');
+fs.readFile('./samples/enzyme.md', 'utf8', (err, content) => {
+  console.log(content);
+  console.log(readmeParser(content));
+})
