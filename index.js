@@ -59,10 +59,30 @@ module.exports = function(source) {
         .join('')
       )
     )(_.cloneDeep(tree)),
+    images: {
+      logo:(tokens => (
+        _(tokens)
+          .chain()
+          .find(t => new RegExp('logo', 'i').test(t.content))
+          .getContent()
+          .getUrl()
+          .value()
+        )
+      )(_.cloneDeep(tree)),
+      screenshot:(tokens => (
+        _(tokens)
+          .chain()
+          .find(t => new RegExp('screenshot', 'i').test(t.content))
+          .getContent()
+          .getUrl()
+          .value()
+        )
+      )(_.cloneDeep(tree))
+    },
     installation: helpers.contentByTitle(_.cloneDeep(tree), checks.installation),
     features: helpers.contentByTitle(_.cloneDeep(tree), checks.features),
     contribute: helpers.contentByTitle(_.cloneDeep(tree), checks.contribute),
-    license: helpers.contentByTitle(_.cloneDeep(tree), checks.license),
+    license: helpers.contentByTitle(_.cloneDeep(tree), checks.license)
   };
 
   return helpers.renderToHtml(obj);
